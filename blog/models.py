@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 # This is a custom model manager class that filters the queryset on
@@ -67,6 +68,17 @@ class Post(models.Model):
     objects = models.Manager()
     # And published as the custom manager we defined at the top of the file.
     published = PublishedManager()
+
+    def get_absolute_url(self):
+        """This method returns the canonical URL for a specific post"""
+
+        # Using the urls.reverse method we can build a URL from a name and
+        # by passing optional parameters.
+        return reverse('blog:post_detail',
+                       args=[self.publish.year,
+                             self.publish.month,
+                             self.publish.day,
+                             self.slug])
 
     # String representation of the class which will return the blog post title
     def __str__(self):
