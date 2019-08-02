@@ -3,6 +3,14 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
+# This is a custom model manager class that filters the queryset on
+# whether the post is published or not.
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset()\
+                                            .filter(status='published')
+
+
 # Class to represent our blog posts. Inherits from Django's models.Model class
 class Post(models.Model):
 
@@ -54,6 +62,11 @@ class Post(models.Model):
     # The negative prefix means the posts will appear with most recent first.
     class Meta:
         ordering = ('-publish',)
+
+    # Here we define objects as the default model manager
+    objects = models.Manager()
+    # And published as the custom manager we defined at the top of the file.
+    published = PublishedManager()
 
     # String representation of the class which will return the blog post title
     def __str__(self):
