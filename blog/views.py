@@ -18,8 +18,11 @@ def post_list(request):
 
 
 def post_detail(request, year, month, day, post):
-    """Retrieve a single post with the passed criteria and pass
-    to the rendered template"""
+    """Retrieve a single published post with the parameters
+    passed to the method and render with the given template."""
+
+    # We use get_object_or_404 to get the post. If the post is
+    # not found, Django serves a HTTP 404 exception
     post = get_object_or_404(Post,
                              slug=post,
                              status='published',
