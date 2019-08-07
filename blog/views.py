@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post
 
 
@@ -8,13 +9,31 @@ def post_list(request):
 
     # Here we retrieve all the published posts using the custom model manager
     # we created in the models.py file
-    posts = Post.published.all()
+    object_list = Post.published.all()
+
+    # Then we create a Paginator object to limit the number of posts
+    # to three per page
+    paginator = Paginator(object_list, 3)
+
+    # the GET page parameter stores the current page
+    page = request.GET.get('page')
+
+    try:
+        # we obtain the posts for the desired page by using Paginator page() method
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        # if page parameter is not a number, retrieve the first page of results
+        posts = paginator.page(1)
+    except EmptyPage:
+        # if out of range, return the last page
+        posts = paginator.page(paginator.num_pages)
 
     # Then we use Django's render shortcut to render a template
     # and pass the posts to the given template
     return render(request,
                   'blog/post/list.html',
-                  {'posts': posts})
+                  {'page': page,
+                   'posts': posts})
 
 
 def post_detail(request, year, month, day, post):
