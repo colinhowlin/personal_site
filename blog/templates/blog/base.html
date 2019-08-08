@@ -1,14 +1,20 @@
 <!-- load static tells Django to load the static template tags
  so we can easily load static files such as css or js files.-->
-{% load static %}
+
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+    <link href="{% static 'css/navbar.css' %}" rel="stylesheet">
 </head>
 <body>
+    <div id="navbar">
+        {% include 'blog/navbar.html' %}
+    </div>
+
     <div id="content">
         {% block content %}
 
